@@ -25,7 +25,7 @@
  *
  * @author  Jos de Jong, <wjosdejong@gmail.com>
  * @version 5.7.1
- * @date    2017-06-25
+ * @date    2017-06-27
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -12103,8 +12103,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var field = !node.parent
 	        ? undefined  // do not add an (optional) field name of the root node
 	        :  (node.parent.type != 'array')
-	            ? node.field
-	            : node.index;
+	            ? '.' + node.field
+	            : '[' + node.index + ']';
 
 	    if (field !== undefined) {
 	      path.unshift(field);
@@ -13795,7 +13795,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  });
 	  delete editor.drag;
-
 	  if (editor.mousemove) {
 	    util.removeEventListener(window, 'mousemove', editor.mousemove);
 	    delete editor.mousemove;
@@ -13937,12 +13936,39 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // apply field to DOM
 	  var domField = this.dom.field;
+	  var tdField = this.dom.tdField;
+	  if(tdField){
+	      tdField.draggable = true;
+	      tdField.className = 'jsoneditor-dragarea';
+	      var pathArr = this.getPath();
+	      console.log(pathArr);
+	      var isNumber = function(obj){
+	          return (typeof obj=='number')&&obj.constructor==Number;
+	      };
+	      tdField.ondragstart = function (ev) {
+	          var text = pathArr ? pathArr.join("") : "";
+	          if(text.length > 0){
+	              text = text.substr(1);
+	          }
+	          if(window.jsonEditorPreData !== null && window.jsonEditorPreData !== undefined){
+	              text =  window.jsonEditorPreData + text;
+	          }
+	          ev.dataTransfer.setData("Text", text);
+	      }
+	      tdField.style.cursor="move";
+	  }
 	  if (domField) {
 	    if (this.fieldEditable) {
 	      // parent is an object
 	      domField.contentEditable = this.editable.field;
 	      domField.spellcheck = false;
 	      domField.className = 'jsoneditor-field';
+	      //
+	      // console.log(this.getPath());
+	      // console.log(this.dom);
+	      // console.log(this);
+	      // console.log(domField);
+	      // console.log(this.baseURI);
 	    }
 	    else {
 	      // parent is an array this is the root node

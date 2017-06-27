@@ -83,8 +83,8 @@ Node.prototype.getPath = function () {
     var field = !node.parent
         ? undefined  // do not add an (optional) field name of the root node
         :  (node.parent.type != 'array')
-            ? node.field
-            : node.index;
+            ? '.' + node.field
+            : '[' + node.index + ']';
 
     if (field !== undefined) {
       path.unshift(field);
@@ -1775,7 +1775,6 @@ Node.onDragEnd = function (nodes, event) {
     }
   });
   delete editor.drag;
-
   if (editor.mousemove) {
     util.removeEventListener(window, 'mousemove', editor.mousemove);
     delete editor.mousemove;
@@ -1917,6 +1916,27 @@ Node.prototype.updateDom = function (options) {
 
   // apply field to DOM
   var domField = this.dom.field;
+  var tdField = this.dom.tdField;
+  if(tdField){
+      tdField.draggable = true;
+      tdField.className = 'jsoneditor-dragarea';
+      var pathArr = this.getPath();
+      console.log(pathArr);
+      var isNumber = function(obj){
+          return (typeof obj=='number')&&obj.constructor==Number;
+      };
+      tdField.ondragstart = function (ev) {
+          var text = pathArr ? pathArr.join("") : "";
+          if(text.length > 0){
+              text = text.substr(1);
+          }
+          if(window.jsonEditorPreData !== null && window.jsonEditorPreData !== undefined){
+              text =  window.jsonEditorPreData + text;
+          }
+          ev.dataTransfer.setData("Text", text);
+      }
+      tdField.style.cursor="move";
+  }
   if (domField) {
     if (this.fieldEditable) {
       // parent is an object
