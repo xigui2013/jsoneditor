@@ -25,7 +25,7 @@
  *
  * @author  Jos de Jong, <wjosdejong@gmail.com>
  * @version 5.7.1
- * @date    2017-06-27
+ * @date    2017-07-19
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -13933,7 +13933,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (domTree) {
 	    domTree.style.marginLeft = this.getLevel() * 24 + 'px';
 	  }
-
 	  // apply field to DOM
 	  var domField = this.dom.field;
 	  var tdField = this.dom.tdField;
@@ -13941,10 +13940,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      tdField.draggable = true;
 	      tdField.className = 'jsoneditor-dragarea';
 	      var pathArr = this.getPath();
-	      console.log(pathArr);
-	      var isNumber = function(obj){
-	          return (typeof obj=='number')&&obj.constructor==Number;
-	      };
 	      tdField.ondragstart = function (ev) {
 	          var text = pathArr ? pathArr.join("") : "";
 	          if(text.length > 0){
@@ -13956,6 +13951,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          ev.dataTransfer.setData("Text", text);
 	      }
 	      tdField.style.cursor="move";
+	      this.fieldEditable = false;
 	  }
 	  if (domField) {
 	    if (this.fieldEditable) {
@@ -13963,12 +13959,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      domField.contentEditable = this.editable.field;
 	      domField.spellcheck = false;
 	      domField.className = 'jsoneditor-field';
-	      //
-	      // console.log(this.getPath());
-	      // console.log(this.dom);
-	      // console.log(this);
-	      // console.log(domField);
-	      // console.log(this.baseURI);
 	    }
 	    else {
 	      // parent is an array this is the root node

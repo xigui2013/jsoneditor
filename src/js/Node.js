@@ -1913,7 +1913,6 @@ Node.prototype.updateDom = function (options) {
   if (domTree) {
     domTree.style.marginLeft = this.getLevel() * 24 + 'px';
   }
-
   // apply field to DOM
   var domField = this.dom.field;
   var tdField = this.dom.tdField;
@@ -1921,10 +1920,6 @@ Node.prototype.updateDom = function (options) {
       tdField.draggable = true;
       tdField.className = 'jsoneditor-dragarea';
       var pathArr = this.getPath();
-      console.log(pathArr);
-      var isNumber = function(obj){
-          return (typeof obj=='number')&&obj.constructor==Number;
-      };
       tdField.ondragstart = function (ev) {
           var text = pathArr ? pathArr.join("") : "";
           if(text.length > 0){
@@ -1936,6 +1931,7 @@ Node.prototype.updateDom = function (options) {
           ev.dataTransfer.setData("Text", text);
       }
       tdField.style.cursor="move";
+      this.fieldEditable = false;
   }
   if (domField) {
     if (this.fieldEditable) {
